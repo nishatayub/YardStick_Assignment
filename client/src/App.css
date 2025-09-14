@@ -1,0 +1,90 @@
+/* Minimal app styles */
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Smooth page transitions */
+.page-container {
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-container.transitioning {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* Button hover effects */
+.smooth-button {
+  transition: all 0.2s ease-in-out;
+  transform: scale(1);
+}
+
+.smooth-button:hover {
+  transform: scale(1.02);
+}
+
+.smooth-button:active {
+  transform: scale(0.98);
+}
+
+/* Form animations */
+.form-fade-in {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading spinner enhancement */
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Smooth modal transitions */
+.modal-backdrop {
+  transition: all 0.2s ease-in-out;
+}
+
+.modal-content {
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
