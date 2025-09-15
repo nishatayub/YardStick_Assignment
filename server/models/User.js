@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 });
 
+// Compound indexes for efficient queries
 userSchema.index({ tenant: 1, role: 1 });
-userSchema.index({ email: 1 }, { unique: true });
 
 module.exports = mongoose.model("User", userSchema);

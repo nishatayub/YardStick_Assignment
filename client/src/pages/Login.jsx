@@ -20,106 +20,123 @@ const Login = ({ setUser, setTenantInfo }) => {
       const response = await axios.post('/users/login', formData);
       localStorage.setItem('token', response.data.token);
       setUser(response.data.user);
-      setTenantInfo(response.data.tenantInfo);
+      setTenantInfo(response.data.user.tenant);
       navigate('/dashboard');
     } catch (error) {
+      console.error('Login error:', error);
       setError(error.response?.data?.message || 'Login failed');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const demoAccounts = [
+    { email: 'admin@acme.test', label: 'Acme Admin', org: 'Acme' },
+    { email: 'user@acme.test', label: 'Acme Member', org: 'Acme' },
+    { email: 'admin@globex.test', label: 'Globex Admin', org: 'Globex' },
+    { email: 'user@globex.test', label: 'Globex Member', org: 'Globex' }
+  ];
+
+  const loginWithDemo = (email) => {
+    setFormData({ email, password: 'password' });
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full">
-        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-white/20">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <Link to="/" className="text-2xl font-bold text-gray-800 hover:text-indigo-600 transition-colors">
-              Notes<span className="text-indigo-600">Pro</span>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        {/* Header */}
+        <div className="text-center">
+          <Link to="/" className="inline-flex items-center space-x-2 mb-8">
+            <div className="w-8 h-8 bg-black rounded-sm flex items-center justify-center">
+              <span className="text-white text-sm font-bold">N</span>
+            </div>
+            <span className="text-xl font-semibold text-black">Notes</span>
+          </Link>
+          <h2 className="text-3xl font-light text-black">
+            Sign in to your account
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Or{' '}
+            <Link to="/signup" className="font-medium text-black hover:underline">
+              create a new account
             </Link>
-            <h2 className="text-3xl font-bold text-gray-800 mt-4 mb-2">Welcome Back</h2>
-            <p className="text-gray-600">Sign in to your account to continue</p>
-          </div>
-          
+          </p>
+        </div>
+
+        {/* Form */}
+        <div className="bg-white py-8 px-6 shadow-sm rounded-lg border border-gray-200">
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6 animate-fade-in">
-              {error}
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-sm text-red-600">{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-gray-700 text-sm font-semibold mb-2">
-                Email Address
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email address
               </label>
               <input
+                id="email"
+                name="email"
                 type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 bg-white/50"
-                placeholder="Enter your email"
                 required
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
+                placeholder="Enter your email"
               />
             </div>
 
             <div>
-              <label className="block text-gray-700 text-sm font-semibold mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                 Password
               </label>
               <input
+                id="password"
+                name="password"
                 type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({...formData, password: e.target.value})}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 bg-white/50"
-                placeholder="Enter your password"
                 required
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
+                placeholder="Enter your password"
               />
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
             >
-              {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Signing in...
-                </div>
-              ) : (
-                'Sign In'
-              )}
+              {isLoading ? 'Signing in...' : 'Sign in'}
             </button>
           </form>
 
-          <div className="mt-8 text-center space-y-4">
-            <p className="text-gray-600">
-              Don't have an account?{' '}
-              <Link
-                to="/signup"
-                className="text-indigo-600 hover:text-indigo-700 font-semibold transition-colors duration-300"
-              >
-                Create one here
-              </Link>
-            </p>
-            <Link
-              to="/"
-              className="inline-flex items-center text-gray-500 hover:text-gray-700 transition-colors duration-300"
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              Back to Home
-            </Link>
+          {/* Demo Accounts */}
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <p className="text-sm font-medium text-gray-700 mb-3">Quick Demo Access:</p>
+            <div className="grid grid-cols-2 gap-2">
+              {demoAccounts.map((account, index) => (
+                <button
+                  key={index}
+                  onClick={() => loginWithDemo(account.email)}
+                  className="text-xs p-2 bg-gray-50 text-gray-700 rounded border hover:bg-gray-100 transition-colors duration-200"
+                >
+                  <div className="font-medium">{account.label}</div>
+                  <div className="text-gray-500">{account.org}</div>
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 mt-2">All demo accounts use password: password</p>
           </div>
-        </div>
-
-        {/* Demo credentials */}
-        <div className="mt-6 p-4 bg-blue-50/80 backdrop-blur-sm rounded-lg border border-blue-200">
-          <p className="text-sm text-blue-800 font-medium mb-2">Demo Account:</p>
-          <p className="text-xs text-blue-700">Email: admin@acme.com</p>
-          <p className="text-xs text-blue-700">Password: password123</p>
         </div>
       </div>
     </div>

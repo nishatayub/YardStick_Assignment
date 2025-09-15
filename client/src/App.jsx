@@ -9,7 +9,6 @@ import './App.css';
 
 const API_BASE_URL = 'http://localhost:8000/api';
 
-// Configure axios defaults
 axios.defaults.baseURL = API_BASE_URL;
 
 function App() {
@@ -23,14 +22,16 @@ function App() {
 
   const checkAuth = async () => {
     const token = localStorage.getItem('token');
+    
     if (token) {
       try {
-        const response = await axios.get('/api/profile', {
+        const response = await axios.get('/profile', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUser(response.data.user);
         setTenantInfo(response.data.tenantInfo);
       } catch (error) {
+        console.error('Auth check failed:', error.response?.data?.message || error.message);
         localStorage.removeItem('token');
         setUser(null);
         setTenantInfo(null);
@@ -47,10 +48,10 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="w-8 h-8 border-2 border-gray-300 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
         </div>
       </div>
     );

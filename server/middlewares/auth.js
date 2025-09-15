@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Tenant = require('../models/Tenant');
 
-// Middleware to authenticate JWT token
 const authenticateToken = async (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
@@ -14,7 +13,6 @@ const authenticateToken = async (req, res, next) => {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         
-        // Get user from database with tenant populated
         const user = await User.findById(decoded.id).populate('tenant');
         if (!user) {
             return res.status(401).json({ message: 'Invalid token - user not found' });
@@ -38,7 +36,7 @@ const authenticateToken = async (req, res, next) => {
             subscriptionPlan: user.tenant.subscriptionPlan
         };
         
-        req.tenant = user.tenant; // Full tenant object for middleware use
+        req.tenant = user.tenant; 
         next();
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
@@ -50,7 +48,6 @@ const authenticateToken = async (req, res, next) => {
     }
 };
 
-// Middleware to authorize admin role
 const requireAdmin = (req, res, next) => {
     if (req.user.role !== 'Admin') {
         return res.status(403).json({ 
@@ -60,7 +57,6 @@ const requireAdmin = (req, res, next) => {
     next();
 };
 
-// Middleware to authorize member or admin role
 const requireMember = (req, res, next) => {
     if (!['Admin', 'Member'].includes(req.user.role)) {
         return res.status(403).json({ 
@@ -70,7 +66,6 @@ const requireMember = (req, res, next) => {
     next();
 };
 
-// Middleware to validate tenant slug from URL params
 const validateTenantAccess = async (req, res, next) => {
     try {
         const { slug } = req.params;
@@ -79,7 +74,6 @@ const validateTenantAccess = async (req, res, next) => {
             return res.status(400).json({ message: 'Tenant slug is required' });
         }
 
-        // Check if the authenticated user belongs to this tenant
         if (req.user.tenantSlug !== slug) {
             return res.status(403).json({ 
                 message: 'Access denied. You can only access your own tenant data.' 
@@ -92,17 +86,14 @@ const validateTenantAccess = async (req, res, next) => {
     }
 };
 
-// Middleware to check subscription limits for note creation
 const checkNoteLimit = async (req, res, next) => {
     try {
         const tenant = req.tenant;
         
-        // Skip check for Pro plan
         if (tenant.subscriptionPlan === 'Pro') {
             return next();
         }
 
-        // Count current notes for Free plan
         const Note = require('../models/Note');
         const currentNotesCount = await Note.countDocuments({ 
             tenant: tenant._id,

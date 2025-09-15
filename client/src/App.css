@@ -1,4 +1,3 @@
-/* Minimal app styles */
 #root {
   width: 100%;
   margin: 0;
@@ -29,7 +28,6 @@
   overflow: hidden;
 }
 
-/* Landing page animations */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -121,7 +119,6 @@
   animation: fade-in-delay-4 2.6s ease-out;
 }
 
-/* Enhanced Smooth Transitions and Animations */
 .page-container {
   opacity: 0;
   transform: translateY(10px);
@@ -174,12 +171,10 @@
   }
 }
 
-/* Card Hover Effects */
 .hover\:shadow-lg:hover {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-/* Loading States */
 .loading {
   position: relative;
   color: transparent;
@@ -205,13 +200,11 @@
   }
 }
 
-/* Focus States for Better Accessibility */
 .focus\:ring-purple-500:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
 }
 
-/* Loading spinner enhancement */
 .spinner {
   animation: spin 1s linear infinite;
 }
@@ -225,7 +218,6 @@
   }
 }
 
-/* Smooth modal transitions */
 .modal-backdrop {
   transition: all 0.2s ease-in-out;
 }
@@ -245,7 +237,6 @@
   }
 }
 
-/* Backdrop blur support */
 .backdrop-blur-sm {
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);

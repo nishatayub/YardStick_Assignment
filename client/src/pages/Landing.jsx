@@ -3,203 +3,125 @@ import { Link } from 'react-router-dom';
 
 const Landing = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="relative z-10 px-6 py-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold text-gray-800">
-            Notes<span className="text-indigo-600">Pro</span>
-          </div>
-          <div className="space-x-4">
-            <Link 
-              to="/login" 
-              className="text-gray-600 hover:text-indigo-600 font-medium transition-colors duration-300"
-            >
-              Login
-            </Link>
-            <Link 
-              to="/signup" 
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
-            >
-              Get Started
-            </Link>
+      <nav className="border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-black rounded-sm flex items-center justify-center">
+                <span className="text-white text-sm font-bold">N</span>
+              </div>
+              <span className="text-xl font-semibold text-black">Notes</span>
+            </div>
+            <div className="flex space-x-4">
+              <Link 
+                to="/login" 
+                className="px-4 py-2 text-gray-600 hover:text-black transition-colors duration-200"
+              >
+                Sign In
+              </Link>
+              <Link 
+                to="/signup" 
+                className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200"
+              >
+                Get Started
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <div className="container mx-auto px-6 pt-20 pb-16">
-        <div className="text-center">
-          <div className="animate-fade-in">
-            <h1 className="text-6xl md:text-7xl font-bold text-gray-800 mb-6 leading-tight">
-              Your Ideas,
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
-                Organized Beautifully
-              </span>
-            </h1>
-          </div>
-          
-          <div className="animate-fade-in-delay">
-            <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-              The most intuitive note-taking platform for teams and individuals. 
-              Capture thoughts, collaborate seamlessly, and bring your ideas to life.
-            </p>
-          </div>
-
-          <div className="animate-fade-in-delay-2 space-y-4 sm:space-y-0 sm:space-x-6 sm:flex sm:justify-center">
+      <section className="py-20">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <h1 className="text-5xl font-light text-black mb-6 fade-in">
+            Simple. Powerful. <br />
+            <span className="font-semibold">Note Taking.</span>
+          </h1>
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto slide-up">
+            Organize your thoughts, collaborate with your team, and stay productive 
+            with our minimalist note-taking platform.
+          </p>
+          <div className="flex justify-center space-x-4 slide-up">
             <Link 
               to="/signup" 
-              className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              className="px-8 py-3 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200"
             >
-              Start Writing Free
+              Start Free
             </Link>
             <Link 
               to="/login" 
-              className="inline-block bg-white hover:bg-gray-50 text-indigo-600 font-semibold py-4 px-8 rounded-xl border-2 border-indigo-200 hover:border-indigo-300 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              className="px-8 py-3 border border-gray-300 text-gray-700 rounded-md hover:border-gray-400 transition-colors duration-200"
             >
               Sign In
             </Link>
           </div>
         </div>
+      </section>
 
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mt-24 animate-fade-in-delay-3">
-          <div className="group">
-            <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:scale-105 border border-white/20">
-              <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+      {/* Features Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-3xl font-semibold text-center text-black mb-12">
+            Everything you need
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center p-6 fade-in">
+              <div className="w-12 h-12 bg-black rounded-md flex items-center justify-center mx-auto mb-4">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-gray-800">Smart Writing</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Rich text editor with intelligent formatting, markdown support, and real-time collaboration features.
-              </p>
+              <h3 className="text-xl font-semibold text-black mb-2">Rich Text Editor</h3>
+              <p className="text-gray-600">Create and format your notes with our intuitive editor.</p>
             </div>
-          </div>
-
-          <div className="group">
-            <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:scale-105 border border-white/20">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            
+            <div className="text-center p-6 fade-in">
+              <div className="w-12 h-12 bg-black rounded-md flex items-center justify-center mx-auto mb-4">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-gray-800">Team Collaboration</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Invite team members, share workspaces, and collaborate in real-time with secure access controls.
-              </p>
+              <h3 className="text-xl font-semibold text-black mb-2">Team Collaboration</h3>
+              <p className="text-gray-600">Work together with your team in dedicated workspaces.</p>
             </div>
-          </div>
-
-          <div className="group">
-            <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:scale-105 border border-white/20">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            
+            <div className="text-center p-6 fade-in">
+              <div className="w-12 h-12 bg-black rounded-md flex items-center justify-center mx-auto mb-4">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-gray-800">Enterprise Security</h3>
-              <p className="text-gray-600 leading-relaxed">
-                End-to-end encryption, SSO integration, and compliance with industry standards to keep your data safe.
-              </p>
+              <h3 className="text-xl font-semibold text-black mb-2">Secure & Private</h3>
+              <p className="text-gray-600">Your data is encrypted and completely isolated per organization.</p>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Pricing Section */}
-        <div className="mt-24 text-center animate-fade-in-delay-4">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">Simple, Transparent Pricing</h2>
-          <p className="text-xl text-gray-600 mb-12">Choose the plan that works for your team</p>
-          
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-gray-200">
-              <h3 className="text-2xl font-bold mb-4 text-gray-800">Free</h3>
-              <div className="text-4xl font-bold text-indigo-600 mb-4">$0<span className="text-lg text-gray-500">/month</span></div>
-              <ul className="space-y-3 text-left mb-8">
-                <li className="flex items-center text-gray-600">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Up to 3 notes
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Basic formatting
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Personal workspace
-                </li>
-              </ul>
-              <Link 
-                to="/signup" 
-                className="w-full inline-block bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-6 rounded-lg transition-all duration-300"
-              >
-                Get Started Free
-              </Link>
-            </div>
-
-            <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-8 rounded-2xl shadow-xl text-white relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-yellow-400 text-yellow-900 px-3 py-1 text-sm font-semibold rounded-bl-lg">
-                Popular
-              </div>
-              <h3 className="text-2xl font-bold mb-4">Pro</h3>
-              <div className="text-4xl font-bold mb-4">$9<span className="text-lg opacity-75">/month</span></div>
-              <ul className="space-y-3 text-left mb-8">
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-300 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Unlimited notes
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-300 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Advanced formatting
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-300 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Team collaboration
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-300 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Priority support
-                </li>
-              </ul>
-              <Link 
-                to="/signup" 
-                className="w-full inline-block bg-white hover:bg-gray-100 text-indigo-600 font-semibold py-3 px-6 rounded-lg transition-all duration-300"
-              >
-                Start Pro Trial
-              </Link>
-            </div>
-          </div>
+      {/* CTA Section */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-3xl font-semibold text-black mb-4">
+            Ready to get organized?
+          </h2>
+          <p className="text-xl text-gray-600 mb-8">
+            Join thousands of teams already using our platform.
+          </p>
+          <Link 
+            to="/signup" 
+            className="inline-block px-8 py-3 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200"
+          >
+            Start Your Free Account
+          </Link>
         </div>
-      </div>
+      </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 mt-24">
-        <div className="container mx-auto px-6 text-center">
-          <div className="text-2xl font-bold mb-4">
-            Notes<span className="text-indigo-400">Pro</span>
-          </div>
-          <p className="text-gray-400 mb-8">The future of note-taking is here</p>
-          <div className="flex justify-center space-x-8 text-sm text-gray-400">
-            <a href="#" className="hover:text-white transition-colors">Privacy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms</a>
-            <a href="#" className="hover:text-white transition-colors">Support</a>
-          </div>
+      <footer className="border-t border-gray-200 py-8">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <p className="text-gray-600">© 2025 Notes. Simple, powerful note-taking.</p>
         </div>
       </footer>
     </div>

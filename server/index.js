@@ -1,8 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
-const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
 const userRouter = require('./routes/userRoute');
 const protectedRoutes = require('./routes/protectedRoutes');
 const noteRoutes = require('./routes/noteRoutes');
@@ -12,32 +10,25 @@ require('dotenv').config();
 
 const app = express();
 
-// CORS configuration
 app.use(cors({
     origin: [
         'http://localhost:3000', 
-        'http://localhost:5173', 
-        'http://localhost:8000',
-        'https://vercel.app',
-        /\.vercel\.app$/,
-        /^http:\/\/localhost:\d+$/
+        'http://localhost:5173',
+        /^https:\/\/.*\.vercel\.app$/
     ],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     optionsSuccessStatus: 200
 }));
 
-app.use(express.json({ limit: '10mb' }));
-app.use(cookieParser());
-app.use(bodyParser.json());
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true }));
 
-// Health endpoint
 app.get("/health", (req, res) => {
-    res.json({ "status": "ok" });
+    res.json({ status: "ok" });
 });
 
-// API routes
 app.use("/api/users", userRouter);
 app.use("/api/notes", noteRoutes);
 app.use("/api/tenants", tenantRoutes);

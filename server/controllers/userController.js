@@ -17,7 +17,6 @@ const signup = async (req, res) => {
             return res.status(400).json({message: "Please provide a tenant slug!"});
         }
 
-        // Find tenant by slug
         const tenant = await Tenant.findOne({ slug: tenantSlug, isActive: true });
         if (!tenant) {
             return res.status(400).json({message: "Invalid tenant!"});
@@ -47,7 +46,7 @@ const signup = async (req, res) => {
             role: newUser.role,
             tenant: newUser.tenant._id,
             tenantSlug: newUser.tenant.slug
-        }, process.env.JWT_SECRET, {expiresIn: '1h'});
+        }, process.env.JWT_SECRET, {expiresIn: '24h'});
         
         return res.status(200).json({
             message: "User creation successful...", 
@@ -102,7 +101,7 @@ const login = async (req, res) => {
             role: existingUser.role,
             tenant: existingUser.tenant._id,
             tenantSlug: existingUser.tenant.slug
-        }, process.env.JWT_SECRET, {expiresIn: '1h'});
+        }, process.env.JWT_SECRET, {expiresIn: '24h'});
         
         return res.status(200).json({
             message: "Login Successful...",
@@ -147,20 +146,15 @@ const register = async (req, res) => {
         if (existingUser) {
             return res.status(400).json({message: "User Already Exists!"});
         }
-        
-        // Create tenant slug from company name
         const tenantSlug = companyName.toLowerCase()
             .replace(/[^a-zA-Z0-9\s]/g, '')
             .replace(/\s+/g, '-')
             .substring(0, 50);
-        
-        // Check if tenant already exists
         const existingTenant = await Tenant.findOne({ slug: tenantSlug });
         if (existingTenant) {
             return res.status(400).json({message: "Company already exists! Please choose a different company name."});
         }
         
-        // Create new tenant
         const newTenant = new Tenant({
             name: companyName,
             slug: tenantSlug,
@@ -171,7 +165,6 @@ const register = async (req, res) => {
         
         await newTenant.save();
         
-        // Create admin user
         const hash = await bcrypt.hash(password, 10);
         const newUser = new User({
             email,
@@ -192,7 +185,7 @@ const register = async (req, res) => {
             role: newUser.role,
             tenant: newUser.tenant._id,
             tenantSlug: newUser.tenant.slug
-        }, process.env.JWT_SECRET, {expiresIn: '1h'});
+        }, process.env.JWT_SECRET, {expiresIn: '24h'});
         
         return res.status(200).json({
             message: "Registration successful...", 
@@ -216,4 +209,64 @@ const register = async (req, res) => {
     }
 };
 
-module.exports = { signup, login, register };
+const inviteUser = async (req, res) => {
+    try {
+        const { email, role, firstName, lastName } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "User with this email already exists" });
+        }
+
+        const validRoles = ['Admin', 'Member'];
+        const userRole = role || 'Member';
+        if (!validRoles.includes(userRole)) {
+            return res.status(400).json({ message: "Invalid role specified" });
+        }
+
+        const tempPassword = Math.random().toString(36).slice(-8);
+        const hashedPassword = await bcrypt.hash(tempPassword, 12);
+
+        const newUser = new User({
+            email,
+            password: hashedPassword,
+            role: userRole,
+            tenant: req.user.tenant,
+            firstName: firstName || '',
+            lastName: lastName || '',
+            name: `${firstName || ''} ${lastName || ''}`.trim()
+        });
+
+        await newUser.save();
+        await newUser.populate('tenant', 'name slug subscriptionPlan');
+
+        res.status(201).json({
+            message: 'User invited successfully',
+            user: {
+                id: newUser._id,
+                email: newUser.email,
+                role: newUser.role,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
+                tenant: {
+                    name: newUser.tenant.name,
+                    slug: newUser.tenant.slug
+                },
+                createdAt: newUser.createdAt
+            },
+            temporaryPassword: tempPassword 
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: 'Failed to invite user',
+            error: error.message
+        });
+    }
+};
+
+module.exports = { signup, login, register, inviteUser };

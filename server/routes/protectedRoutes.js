@@ -2,15 +2,51 @@ const express = require('express');
 const { authenticateToken, requireAdmin, requireMember } = require('../middlewares/auth');
 const router = express.Router();
 
-// Protected route - only accessible by authenticated users
-router.get('/profile', authenticateToken, (req, res) => {
-    res.json({
-        message: 'Profile accessed successfully',
-        user: req.user
-    });
+router.get('/profile', authenticateToken, async (req, res) => {
+    try {
+        const User = require('../models/User');
+        const user = await User.findById(req.user.id).populate('tenant');
+        
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found'
+            });
+        }
+
+        res.json({
+            message: 'Profile accessed successfully',
+            user: {
+                id: user._id,
+                name: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email.split('@')[0],
+                email: user.email,
+                role: user.role,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                tenant: {
+                    id: user.tenant._id,
+                    name: user.tenant.name,
+                    slug: user.tenant.slug,
+                    subscriptionPlan: user.tenant.subscriptionPlan,
+                    maxNotes: user.tenant.maxNotes
+                }
+            },
+            tenantInfo: {
+                id: user.tenant._id,
+                name: user.tenant.name,
+                slug: user.tenant.slug,
+                subscriptionPlan: user.tenant.subscriptionPlan,
+                maxNotes: user.tenant.maxNotes
+            }
+        });
+    } catch (error) {
+        console.error('Profile error:', error);
+        res.status(500).json({
+            message: 'Failed to get profile',
+            error: error.message
+        });
+    }
 });
 
-// Admin-only route - for inviting users and upgrading subscriptions
 router.post('/admin/invite-user', authenticateToken, requireAdmin, (req, res) => {
     res.json({
         message: 'Admin route accessed successfully',
@@ -27,12 +63,11 @@ router.post('/admin/upgrade-subscription', authenticateToken, requireAdmin, (req
     });
 });
 
-// Member route - for notes CRUD operations (both Members and Admins can access)
 router.get('/notes', authenticateToken, requireMember, (req, res) => {
     res.json({
         message: 'Notes retrieved successfully',
         user: req.user,
-        notes: [] // This would contain actual notes from the database
+        notes: []
     });
 });
 
@@ -40,7 +75,7 @@ router.post('/notes', authenticateToken, requireMember, (req, res) => {
     res.json({
         message: 'Note created successfully',
         user: req.user,
-        note: req.body // This would create a new note in the database
+        note: req.body
     });
 });
 

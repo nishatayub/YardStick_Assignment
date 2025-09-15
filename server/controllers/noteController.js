@@ -1,7 +1,7 @@
 const Note = require('../models/Note');
+const Tenant = require('../models/Tenant');
 const mongoose = require('mongoose');
 
-// Create a new note
 const createNote = async (req, res) => {
     try {
         const { title, content, tags, priority } = req.body;
@@ -10,6 +10,29 @@ const createNote = async (req, res) => {
             return res.status(400).json({
                 message: 'Title and content are required'
             });
+        }
+
+        const tenant = await Tenant.findById(req.user.tenant);
+        if (!tenant) {
+            return res.status(404).json({
+                message: 'Tenant not found'
+            });
+        }
+
+        if (tenant.subscriptionPlan === 'Free') {
+            const currentNotesCount = await Note.countDocuments({
+                tenant: req.user.tenant,
+                isArchived: false
+            });
+
+            if (currentNotesCount >= tenant.maxNotes) {
+                return res.status(403).json({
+                    message: 'Note limit reached for Free plan. Upgrade to Pro for unlimited notes.',
+                    currentNotes: currentNotesCount,
+                    maxNotes: tenant.maxNotes,
+                    subscriptionPlan: tenant.subscriptionPlan
+                });
+            }
         }
 
         const note = new Note({
@@ -22,14 +45,12 @@ const createNote = async (req, res) => {
         });
 
         await note.save();
-        
-        // Populate author information for response
         await note.populate('author', 'email firstName lastName role');
 
         res.status(201).json({
             message: 'Note created successfully',
             note: {
-                id: note._id,
+                _id: note._id,
                 title: note.title,
                 content: note.content,
                 tags: note.tags,
@@ -48,7 +69,6 @@ const createNote = async (req, res) => {
     }
 };
 
-// Get all notes for the current tenant
 const getAllNotes = async (req, res) => {
     try {
         const { 
@@ -56,6 +76,7 @@ const getAllNotes = async (req, res) => {
             limit = 10, 
             search, 
             priority, 
+            tags,
             author,
             archived = false 
         } = req.query;
@@ -65,20 +86,21 @@ const getAllNotes = async (req, res) => {
             isArchived: archived === 'true'
         };
 
-        // Add search filter
         if (search) {
             query.$or = [
                 { title: { $regex: search, $options: 'i' } },
                 { content: { $regex: search, $options: 'i' } }
             ];
         }
-
-        // Add priority filter
         if (priority && ['low', 'medium', 'high'].includes(priority)) {
             query.priority = priority;
         }
 
-        // Add author filter
+        if (tags) {
+            const tagArray = Array.isArray(tags) ? tags : tags.split(',').map(tag => tag.trim());
+            query.tags = { $in: tagArray };
+        }
+
         if (author) {
             query.author = author;
         }
@@ -104,7 +126,7 @@ const getAllNotes = async (req, res) => {
         res.json({
             message: 'Notes retrieved successfully',
             notes: notes.map(note => ({
-                id: note._id,
+                _id: note._id,
                 title: note.title,
                 content: note.content,
                 tags: note.tags,
@@ -131,7 +153,6 @@ const getAllNotes = async (req, res) => {
     }
 };
 
-// Get a specific note by ID
 const getNoteById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -152,7 +173,7 @@ const getNoteById = async (req, res) => {
         res.json({
             message: 'Note retrieved successfully',
             note: {
-                id: note._id,
+                _id: note._id,
                 title: note.title,
                 content: note.content,
                 tags: note.tags,
@@ -172,7 +193,6 @@ const getNoteById = async (req, res) => {
     }
 };
 
-// Update a note
 const updateNote = async (req, res) => {
     try {
         const { id } = req.params;
@@ -190,15 +210,13 @@ const updateNote = async (req, res) => {
         if (!note) {
             return res.status(404).json({ message: 'Note not found' });
         }
-
-        // Check if user can modify this note
+    
         if (!note.canModify(req.user.id, req.user.role, req.user.tenant)) {
             return res.status(403).json({
                 message: 'Access denied. You can only modify your own notes.'
             });
         }
 
-        // Update fields if provided
         if (title !== undefined) note.title = title;
         if (content !== undefined) note.content = content;
         if (tags !== undefined) note.tags = tags;
@@ -213,7 +231,7 @@ const updateNote = async (req, res) => {
         res.json({
             message: 'Note updated successfully',
             note: {
-                id: note._id,
+                _id: note._id,
                 title: note.title,
                 content: note.content,
                 tags: note.tags,
@@ -233,7 +251,6 @@ const updateNote = async (req, res) => {
     }
 };
 
-// Delete a note
 const deleteNote = async (req, res) => {
     try {
         const { id } = req.params;
@@ -250,8 +267,6 @@ const deleteNote = async (req, res) => {
         if (!note) {
             return res.status(404).json({ message: 'Note not found' });
         }
-
-        // Check if user can modify this note
         if (!note.canModify(req.user.id, req.user.role, req.user.tenant)) {
             return res.status(403).json({
                 message: 'Access denied. You can only delete your own notes.'
