@@ -7,7 +7,7 @@ import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import './App.css';
 
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = 'https://yardstick-assignment-7x6c.onrender.com/api';
 
 axios.defaults.baseURL = API_BASE_URL;
 

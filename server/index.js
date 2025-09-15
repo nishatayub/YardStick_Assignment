@@ -14,6 +14,7 @@ app.use(cors({
     origin: [
         'http://localhost:3000', 
         'http://localhost:5173',
+        'https://yardstick-assignment-indol.vercel.app',
         /^https:\/\/.*\.vercel\.app$/
     ],
     credentials: true,
